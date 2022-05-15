@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class BooleanSearchEngine implements SearchEngine {
-    //коллекция списка PageEntry с ключом в виде слова
+    //коллекция списков PageEntry с ключом в виде слова
     public static Map<String, List<PageEntry>> listResult = new HashMap<>();
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
@@ -29,7 +29,7 @@ public class BooleanSearchEngine implements SearchEngine {
                     freqs.put(word.toLowerCase(), freqs.getOrDefault(word, 0) + 1);
                 }
 
-                //создание PageEntry и заполнение списка PageEntry по ключевым словам
+                //создание PageEntry и заполнение списка PageEntry по ключевому слову
                 for (Map.Entry<String, Integer> set : freqs.entrySet()) {
                     String key = set.getKey();
                     int value = set.getValue();
