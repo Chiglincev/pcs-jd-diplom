@@ -7,39 +7,41 @@ import java.io.IOException;
 import java.util.*;
 
 public class BooleanSearchEngine implements SearchEngine {
-
-    public static List<HashMap> indexWords = new ArrayList<>();
+    //коллекция списка PageEntry с ключом в виде слова
+    public static Map<String, List<PageEntry>> listResult = new HashMap<>();
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
-        var doc = new PdfDocument(new PdfReader(pdfsDir));
-        int maxNumPage = doc.getNumberOfPages();
+        for (File pdf : pdfsDir.listFiles()) {
+            var doc = new PdfDocument(new PdfReader(pdf));
+            int maxNumPage = doc.getNumberOfPages();
 
-        Map<String, PageEntry> listResult = new HashMap<>();
+            for (int numPage = 1; numPage < maxNumPage; numPage++) {
+                var page = doc.getPage(numPage);
+                var text = PdfTextExtractor.getTextFromPage(page);
+                var words = text.split("\\P{IsAlphabetic}+");
 
-        for (int numPage = 1; numPage < maxNumPage; numPage++) {
-            var page = doc.getPage(numPage);
-            var text = PdfTextExtractor.getTextFromPage(page);
-            var words = text.split("\\P{IsAlphabetic}+");
-
-            Map<String, Integer> freqs = new HashMap<>();
-            for (var word : words) {
-                if (word.isEmpty()) {
-                    continue;
+                //подсчёт частоты слов
+                Map<String, Integer> freqs = new HashMap<>();
+                for (var word : words) {
+                    if (word.isEmpty()) {
+                        continue;
+                    }
+                    freqs.put(word.toLowerCase(), freqs.getOrDefault(word, 0) + 1);
                 }
-                freqs.put(word.toLowerCase(), freqs.getOrDefault(word, 0) + 1);
-            }
 
-            Iterator<String> iter = freqs.keySet().iterator();
-            while (iter.hasNext()) {
-                String word = iter.next();
-                int count = freqs.get(word);
-                listResult.put(word, new PageEntry(pdfsDir.getName(), numPage, count));
-            }
+                //создание PageEntry и заполнение списка PageEntry по ключевым словам
+                for (Map.Entry<String, Integer> set : freqs.entrySet()) {
+                    String key = set.getKey();
+                    int value = set.getValue();
+                    PageEntry pageEntry = new PageEntry(pdf.getName(), numPage, value);
 
-            indexWords.add((HashMap)listResult);
+                    if (!listResult.containsKey(key)) {
+                        listResult.put(key, new ArrayList<PageEntry>());
+                    }
+                    listResult.get(key).add(pageEntry);
+                }
+            }
         }
-        // прочтите тут все pdf и сохраните нужные данные,
-        // тк во время поиска сервер не должен уже читать файлы
     }
 
     @Override
@@ -47,14 +49,14 @@ public class BooleanSearchEngine implements SearchEngine {
         List<PageEntry> output = new ArrayList<>();
 
         //проходит по списку всех PageEntry, фильтрует по ключевому слову и выводит список PageEntry.
-        for (HashMap<String, PageEntry> listResult : indexWords) {
-            for (Map.Entry<String, PageEntry> set : listResult.entrySet()) {
-                if (set.getKey().equals(word)) {
-                    output.add(set.getValue());
-                }
+        for (Map.Entry<String, List<PageEntry>> set : listResult.entrySet()) {
+            if (set.getKey().equals(word)) {
+                output.addAll(set.getValue());
             }
         }
-        output.stream().sorted();
+        output = output.stream().
+                            sorted().
+                            toList();
         return output;
     }
 }

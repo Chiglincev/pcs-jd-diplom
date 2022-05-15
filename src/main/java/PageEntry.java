@@ -1,6 +1,3 @@
-import java.util.HashMap;
-import java.util.Map;
-
 public class PageEntry implements Comparable<PageEntry> {
     private final String pdfName;
     private final int page;
@@ -14,13 +11,16 @@ public class PageEntry implements Comparable<PageEntry> {
 
     @Override
     public int compareTo(PageEntry o) {
+        int result = o.count - count;
         if (count != o.count) {
-            return count > o.count ? 1 : -1;
+            return result / Math.abs(result);
         } else {
             return 0;
         }
     }
 
-
-    // ???
+    @Override
+    public String toString() {
+        return pdfName + " " + page + " " + count;
+    }
 }

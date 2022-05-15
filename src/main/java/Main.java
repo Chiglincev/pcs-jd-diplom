@@ -3,8 +3,8 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        BooleanSearchEngine engine = new BooleanSearchEngine(new File("C://Users/Peter/IdeaProjects/Netology/pcs-jd-diplom/pdfs/SoftSkills.pdf"));
-        System.out.println(engine.search("навыки"));
+        BooleanSearchEngine engine = new BooleanSearchEngine(new File("pdfs"));
+        System.out.println(engine.search("бизнес"));
 
         // здесь создайте сервер, который отвечал бы на нужные запросы
         // слушать он должен порт 8989
