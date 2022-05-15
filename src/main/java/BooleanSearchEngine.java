@@ -46,11 +46,11 @@ public class BooleanSearchEngine implements SearchEngine {
     public List<PageEntry> search(String word) {
         List<PageEntry> output = new ArrayList<>();
 
+        //проходит по списку всех PageEntry, фильтрует по ключевому слову и выводит список PageEntry.
         for (HashMap<String, PageEntry> listResult : indexWords) {
-            Iterator<String> iter = listResult.keySet().iterator();
-            while (iter.hasNext()) {
-                if (word.equals(iter.next())) {
-                    output.add(listResult.get(word));
+            for (Map.Entry<String, PageEntry> set : listResult.entrySet()) {
+                if (set.getKey().equals(word)) {
+                    output.add(set.getValue());
                 }
             }
         }
