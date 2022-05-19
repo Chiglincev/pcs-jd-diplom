@@ -24,7 +24,7 @@ public class Server {
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))
                 ) {
-                    String word = in.readLine();
+                    String word = in.readLine().toLowerCase();
                     out.println(gson.toJson(engine.search(word)));
                 }
             }

@@ -42,21 +42,14 @@ public class BooleanSearchEngine implements SearchEngine {
                 }
             }
         }
+        //сортировка по количеству совпадений
+        for (Map.Entry<String, List<PageEntry>> set : listResult.entrySet()) {
+            listResult.put(set.getKey(), set.getValue().stream().sorted().toList());
+        }
     }
 
     @Override
     public List<PageEntry> search(String word) {
-        List<PageEntry> output = new ArrayList<>();
-
-        //проходит по списку всех PageEntry, фильтрует по ключевому слову и выводит список PageEntry.
-        for (Map.Entry<String, List<PageEntry>> set : listResult.entrySet()) {
-            if (set.getKey().equals(word)) {
-                output.addAll(set.getValue());
-            }
-        }
-        output = output.stream().
-                            sorted().
-                            toList();
-        return output;
+        return listResult.get(word);
     }
 }
