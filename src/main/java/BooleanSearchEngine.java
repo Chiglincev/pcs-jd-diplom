@@ -8,7 +8,7 @@ import java.util.*;
 
 public class BooleanSearchEngine implements SearchEngine {
     //коллекция списков PageEntry с ключом в виде слова
-    public static Map<String, List<PageEntry>> listResult = new HashMap<>();
+    public Map<String, List<PageEntry>> listResult = new HashMap<>();
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
         for (File pdf : pdfsDir.listFiles()) {
